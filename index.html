@@ -1,1 +1,130 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZamalekLoverS | نشرة الزمالك</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .navbar {
+      background-color: #d61c1c;
+    }
+    .navbar-brand {
+      color: white;
+      font-weight: bold;
+    }
+    .card {
+      border: 1px solid #eee;
+      margin-bottom: 20px;
+    }
+    .like-btn {
+      color: red;
+      cursor: pointer;
+    }
+    .footer {
+      background-color: #f1f1f1;
+      padding: 20px;
+      margin-top: 50px;
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+    }
+    .owner-panel {
+      background: #eee;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">ZamalekLoverS 🦅</a>
+    </div>
+  </nav>
+
+  <!-- Container -->
+  <div class="container mt-4">
+
+    <!-- Owner Panel (رابط خاص فقط للمالك يظهره يدويًا لاحقًا) -->
+    <div class="owner-panel" id="ownerPanel">
+      <h5>📝 لوحة النشر الخاصة بالمالك</h5>
+      <textarea class="form-control mb-2" rows="3" placeholder="أكتب الخبر هنا..."></textarea>
+      <button class="btn btn-danger">نشر الخبر</button>
+    </div>
+
+    <!-- نموذج تسجيل -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5>👤 التسجيل في ZamalekLoverS</h5>
+        <input type="text" class="form-control mb-2" placeholder="اسم المستخدم">
+        <input type="email" class="form-control mb-2" placeholder="البريد الإلكتروني">
+        <button class="btn btn-primary">تسجيل</button>
+      </div>
+    </div>
+
+    <!-- منشور -->
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">⚽ الزمالك يفوز على الأهلي 2-1 🔥</h5>
+        <p class="card-text">أداء عالمي من فريق الزمالك بقيادة شيكابالا، والمستقبل واعد. 🇦🇹❤️</p>
+        <div>
+          <span class="like-btn" onclick="alert('أعجبتك ✨')">❤️ إعجاب</span> |
+          <span onclick="toggleComments(this)">💬 تعليق</span>
+        </div>
+        <div class="comments mt-3" style="display:none">
+          <input type="text" class="form-control mb-2" placeholder="اكتب تعليقك...">
+          <button class="btn btn-secondary btn-sm">إرسال</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- منشور 2 -->
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">🏆 الزمالك يتأهل لنهائي كأس مصر</h5>
+        <p class="card-text">بعد مباراة حماسية أمام بيراميدز، الزمالك يتأهل للنهائي بكل جدارة. 👏</p>
+        <div>
+          <span class="like-btn" onclick="alert('أعجبتك ✨')">❤️ إعجاب</span> |
+          <span onclick="toggleComments(this)">💬 تعليق</span>
+        </div>
+        <div class="comments mt-3" style="display:none">
+          <input type="text" class="form-control mb-2" placeholder="اكتب تعليقك...">
+          <button class="btn btn-secondary btn-sm">إرسال</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    &copy; 2025 ZamalekLoverS. جميع الحقوق محفوظة لعشاق الزمالك ❤️⚽
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // رابط خاص للمالك: ?admin=1
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('admin') === '1') {
+      document.getElementById('ownerPanel').style.display = 'block';
+    }
+
+    // إظهار التعليقات
+    function toggleComments(el) {
+      const commentBox = el.parentElement.nextElementSibling;
+      commentBox.style.display = commentBox.style.display === 'none' ? 'block' : 'none';
+    }
+  </script>
+
+</body>
+</html>
 
