@@ -44,6 +44,10 @@
       margin-bottom: 30px;
       border-radius: 10px;
     }
+    img, video {
+      max-height: 400px;
+      object-fit: cover;
+    }
   </style>
 </head>
 <body>
@@ -79,6 +83,16 @@
     <button class="btn btn-danger" onclick="addPost()">نشر الخبر</button>
   </div>
 
+  <!-- رفع صورة / فيديو -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5>📸 شارك صورة أو فيديو مع عشاق الزمالك</h5>
+      <input type="file" class="form-control mb-2" accept="image/*,video/*" id="mediaInput">
+      <textarea class="form-control mb-2" rows="2" placeholder="اكتب وصف المنشور..." id="mediaCaption"></textarea>
+      <button class="btn btn-danger" onclick="addMediaPost()">نشر الوسائط</button>
+    </div>
+  </div>
+
   <!-- المنشورات -->
   <div id="postsContainer"></div>
 </div>
@@ -96,7 +110,6 @@
   const userDisplay = document.getElementById('userDisplay');
   let currentUser = "";
 
-  // تسجيل الدخول
   function login() {
     const name = document.getElementById('usernameInput').value.trim();
     if (!name) return alert("الرجاء إدخال اسم صحيح");
@@ -106,14 +119,12 @@
     renderPosts();
   }
 
-  // عرض رسالة ترحيب
   function showWelcome() {
     document.getElementById("loginCard").style.display = "none";
     document.getElementById("welcome").style.display = "block";
     userDisplay.textContent = currentUser;
   }
 
-  // إعداد الصفحة
   window.onload = () => {
     const params = new URLSearchParams(window.location.search);
     const user = localStorage.getItem("zamalekUser");
@@ -127,7 +138,6 @@
     renderPosts();
   };
 
-  // نشر بوست جديد
   function addPost() {
     const content = postContent.value.trim();
     if (!content) return alert("لا يمكن نشر بوست فارغ");
@@ -144,17 +154,61 @@
     renderPosts();
   }
 
-  // عرض المنشورات
+  function addMediaPost() {
+    const fileInput = document.getElementById('mediaInput');
+    const caption = document.getElementById('mediaCaption').value.trim();
+    if (!fileInput.files[0]) return alert("الرجاء اختيار صورة أو فيديو");
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      const mediaUrl = e.target.result;
+      const mediaType = file.type.startsWith("video") ? "video" : "image";
+
+      const posts = JSON.parse(localStorage.getItem("zamalekPosts") || "[]");
+      posts.unshift({
+        id: Date.now(),
+        user: currentUser || "مستخدم",
+        content: caption,
+        likes: 0,
+        comments: [],
+        media: {
+          type: mediaType,
+          url: mediaUrl
+        }
+      });
+      localStorage.setItem("zamalekPosts", JSON.stringify(posts));
+      document.getElementById('mediaCaption').value = "";
+      fileInput.value = "";
+      renderPosts();
+    };
+
+    reader.readAsDataURL(file);
+  }
+
   function renderPosts() {
     const posts = JSON.parse(localStorage.getItem("zamalekPosts") || "[]");
     postsContainer.innerHTML = "";
     posts.forEach(post => {
       const card = document.createElement("div");
       card.className = "card";
-      card.innerHTML = `
+
+      let html = `
         <div class="card-body">
           <div class="post-header">📰 ${post.user}</div>
-          <p>${post.content}</p>
+          <p>${post.content || ""}</p>
+      `;
+
+      if (post.media) {
+        if (post.media.type === "image") {
+          html += `<img src="${post.media.url}" class="img-fluid mb-2 rounded" />`;
+        } else if (post.media.type === "video") {
+          html += `<video controls class="w-100 mb-2 rounded"><source src="${post.media.url}"></video>`;
+        }
+      }
+
+      html += `
           <div>
             <span class="like-btn" onclick="likePost(${post.id})">❤️ إعجاب (<span id="like-${post.id}">${post.likes}</span>)</span>
             |
@@ -169,11 +223,11 @@
           </div>
         </div>
       `;
+      card.innerHTML = html;
       postsContainer.appendChild(card);
     });
   }
 
-  // لايك
   function likePost(id) {
     const posts = JSON.parse(localStorage.getItem("zamalekPosts") || "[]");
     const post = posts.find(p => p.id === id);
@@ -182,7 +236,6 @@
     document.getElementById(`like-${id}`).textContent = post.likes;
   }
 
-  // تعليق
   function addComment(id) {
     const input = document.getElementById(`comment-input-${id}`);
     const text = input.value.trim();
@@ -195,7 +248,6 @@
     renderPosts();
   }
 
-  // إظهار التعليقات
   function toggleComments(id) {
     const section = document.getElementById(`comment-section-${id}`);
     section.style.display = section.style.display === "none" ? "block" : "none";
